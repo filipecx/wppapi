@@ -99,28 +99,33 @@ client.on('message_create', async message => {
         }
         if (message.body === '2') {         
             client.sendMessage(message.from, "Informe a rua do endereço de entrega");
-            if (message.body === 'oi') {
-                etapa = 'pega rua'
-            }
+            etapa = 'pega rua'
+            
             }
             
     }
     else if (etapa === 'pega rua') {
-        console.log(message.body + "message body")
-        if (message.body.length > 1) {
+        
             rua = message.body;
-            client.sendMessage(message.from, "Informe o número da rua");
-            etapa = 'pega numero rua';  // Aguarda a próxima resposta para número da rua
-        }
+            if (rua.length > 1) {
+                client.sendMessage(message.from, "Informe o número da rua");
+                etapa = 'pega numero rua';  // Aguarda a próxima resposta para número da rua
+
+            }
+        
         
     }
     else if (etapa === 'pega numero rua') {
-        console.log(etapa)
         
+
+        console.log(etapa)
+        if (parseInt(message.body) > 0) {
             numero_rua = message.body
             client.sendMessage(message.from, "Complemento")
             etapa = 'pega complemento'
         
+        }
+            
         
     }
     else if (etapa === 'pega complemento') {
