@@ -22,6 +22,30 @@ app.use(cors())
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
+///////////////////////////////////////////////////////////
+//mandar mensagem
+
+app.post('/enviar-mensagem', (req, res) => {
+    const {numero, mensagem} = req.body
+    console.log(`numero: ${numero}, mensagem: ${mensagem}`)
+
+
+    if (!phoneNumber || !message) {
+        return res.status(400).json({ error: 'Phone number and message are required' });
+    }
+
+    client.sendMessage(`${numero}@c.us`, mensagem)
+        .then(response => {
+            res.json({ success: true, response });
+        })
+        .catch(error => {
+            res.status(500).json({ error: 'Failed to send message', details: error });
+        }
+    )
+})
+
+
+///////////////////////////////////////////////////////////
 
 
 //Isso faz com que o puppeteer guarde a autenticação, não precisando fazer novamente o tempo todo. Evita tomar ban
@@ -167,16 +191,6 @@ let saudacao = "Olá! \n1. Fazer novo pedido \n2. Realizar pedido padrão \n3. F
 let menu = "Digite o número do produto para adiciona-lo ao carrinho: \n1. Naturágua 20L \n2. Indaiá 20L \n3. Indaiá 5L"
 let finalizado = false
 
-receber_endereco = () => {
-    client.sendMessage(message.from, "Insira o nome da rua do endereço de entrega")
-    let rua = message.body
-    client.sendMessage(message.from, "Insira o número")
-    let numero = message.body
-    client.sendMessage(message.from, "Informe um complemento")
-    let complemento = message.body
-    client.sendMessage(message.from, "Insira o bairro")
-    let bairro = message.body
-}
 
 /////////////////////////////////////////////////////////
 
