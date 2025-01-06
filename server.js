@@ -86,6 +86,9 @@ client.on('message_create', async message => {
     if (etapa === 'inicial') {
         if (message.body === '!ping') {
             // send back "pong" to the chat the message was sent in
+            null
+           
+        } else {
             client.sendMessage(message.from, saudacao);
             etapa = 'pega opcao'
             console.log(etapa)
@@ -129,7 +132,7 @@ client.on('message_create', async message => {
             
     }
     else if (etapa === 'pega rua') {
-        
+            
             rua = message.body;
             if (rua.length > 1) {
                 client.sendMessage(message.from, "Informe o número da rua");
