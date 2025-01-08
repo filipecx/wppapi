@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const cors = require('cors')
+const axios = require('axios');
 //require('dotenv').config({path: './config/.env'})
 //const mongoose = require("mongoose");
 //const connectDB = require('./config/db')
@@ -44,6 +45,27 @@ app.post('/enviar-mensagem', (req, res) => {
     )
 })
 
+axios.post('http:endereco-do-back', 
+    {
+        orderId: 833874, // Qualquer valor
+        quantity: 3, // Uma quantidade aleatória
+        product: {name: "Naturágua", type: "20L"},
+        customer: "Dante Araújo", // vou te mandar os dados do cliente e de produtos
+        phone: "+5585996105145",
+        address: "Rua Antonele Bezerra, 255, Meireles",
+        price: 13 * 3,
+        payment: "Pix", // Pode ser "Pix", "Cartão de Crédito", "Dinheiro"
+        time: "18:30", // um horário qualquer 18:30
+    }
+)
+  .then(response => {
+    console.log('Response from server:', response.data);
+  })
+  .catch(error => {
+    console.error('Error sending POST request:', error);
+  });
+
+
 
 ///////////////////////////////////////////////////////////
 
@@ -79,6 +101,17 @@ let rua = ''
 let numero_rua = ''
 let complemento = ''
 let bairro = ''
+let cliente = {
+    name: "Dante Araújo",
+    phone: "+5585996105145",
+    address: ""
+}
+
+const products = [
+    { name: "Naturágua", type: "20L", value: 13 },
+    { name: "Indaiá", type: "20L", value: 12 },
+    { name: "Indaiá", type: "5L", value: 5 },
+]
 
 
 
