@@ -6,7 +6,7 @@ const axios = require('axios');
 //const mongoose = require("mongoose");
 //const connectDB = require('./config/db')
 //connectDB()
-const PORT = 3000
+const PORT = 8080
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
@@ -44,6 +44,14 @@ app.post('/enviar-mensagem', (req, res) => {
         }
     )
 })
+
+const pegarUsuario = (numero) => {
+    app.get(`http://localhost:3000/api/v1/${numero}`, async (req, res) => {
+        const data = await res.data
+        const usuario = data.json()
+
+    })
+}
 /*
 axios.post('http:endereco-do-back', 
     {
@@ -92,8 +100,7 @@ client.initialize();
 
 
 
-
-
+let contato = {pushname: ""}
 let etapa = 'inicial'
 let produto = ''
 let quantidade = ''
@@ -121,7 +128,10 @@ client.on('message_create', async message => {
             // send back "pong" to the chat the message was sent in
             null
         } else {
-            client.sendMessage(message.from, saudacao);
+            contato =  await message.getContact()
+            console.log(contato.pushname)
+            client.sendMessage(message.from, `Olá, ${contato.pushname}! ${saudacao}`)
+            cliente.phone = message.sender
             etapa = 'pega opcao'
             console.log(etapa)
         }
@@ -136,8 +146,8 @@ client.on('message_create', async message => {
     else if (etapa === 'escolhe produto') {   
         console.log(etapa) 
         if (message.body === '1' || message.body === '2' || message.body === '3') {
-            produto = message.body
-            client.sendMessage(message.from, `Você escolheu ${produto}. Digite a quantidade`)
+            produto = products[message.body - 1]
+            client.sendMessage(message.from, `Você escolheu ${produto.name} de ${produto.type}. Digite a quantidade`)
             etapa = 'escolhe quantidade'
         }
     }
@@ -208,10 +218,31 @@ client.on('message_create', async message => {
         else if (message.body === '2') client.sendMessage(message.from, 'Cartão')
         else if (message.body === '3') client.sendMessage(message.from, 'Dinheiro')
     }
+    else if ( etapa === 'enviar pedido') {
+        axios.post('http:endereco-do-back', 
+            {
+                orderId: 833874, // Qualquer valor
+                quantity: quantidade, // Uma quantidade aleatória
+                product: {name: produto.name, type: produto.type},
+                customer: "Dante Araújo", // vou te mandar os dados do cliente e de produtos
+                phone: "+5585996105145",
+                address: "Rua Antonele Bezerra, 255, Meireles",
+                price: 13 * 3,
+                payment: "Pix", // Pode ser "Pix", "Cartão de Crédito", "Dinheiro"
+                time: "18:30", // um horário qualquer 18:30
+            }
+        )
+          .then(response => {
+            console.log('Response from server:', response.data);
+          })
+          .catch(error => {
+            console.error('Error sending POST request:', error);
+          });
+    }
 })
 
 //////////////////////MENSAGENS////////////////////////////////
-let saudacao = "Olá! \n1. Fazer novo pedido \n2. Realizar pedido padrão \n3. Falar com atendente \n4. Editar Pedido padrão"
+let saudacao = `\nEscolha uma das opções para ser atendido \n1. Fazer novo pedido \n2. Realizar pedido padrão \n3. Falar com atendente \n4. Editar Pedido padrão`
 let menu = "Digite o número do produto para adiciona-lo ao carrinho: \n1. Naturágua 20L \n2. Indaiá 20L \n3. Indaiá 5L"
 let finalizado = false
 
