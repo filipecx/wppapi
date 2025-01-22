@@ -1,4 +1,21 @@
-2025/01/22-09:29:57.314 d98 Reusing MANIFEST C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/01/22-09:29:57.314 d98 Recovering log #808
-2025/01/22-09:29:57.512 d98 Reusing old log C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000808.log 
-2025/01/22-09:29:59.597 1460 Manual compaction at level-0 from '\x00\xa5\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\xa6\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/01/22-09:32:47.047 28b4 Reusing MANIFEST C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/01/22-09:32:47.048 28b4 Recovering log #808
+2025/01/22-09:32:47.789 28b4 Reusing old log C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000808.log 
+2025/01/22-09:32:49.875 700 Level-0 table #817: started
+2025/01/22-09:32:49.951 700 Level-0 table #817: 1033643 bytes OK
+2025/01/22-09:32:49.952 700 Delete type=0 #808
+2025/01/22-09:32:49.954 700 Manual compaction at level-0 from '\x00\xa6\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\xa7\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/01/22-09:32:54.529 18f8 Compacting 1@1 + 5@2 files
+2025/01/22-09:32:54.926 18f8 Generated table #818@1: 84802 keys, 2233552 bytes
+2025/01/22-09:32:55.309 18f8 Generated table #819@1: 96015 keys, 2247030 bytes
+2025/01/22-09:32:55.607 18f8 Generated table #820@1: 101588 keys, 2255145 bytes
+2025/01/22-09:32:55.812 18f8 Generated table #821@1: 35404 keys, 2251006 bytes
+2025/01/22-09:32:56.078 18f8 Generated table #822@1: 62055 keys, 1999186 bytes
+2025/01/22-09:32:56.078 18f8 Compacted 1@1 + 5@2 files => 10985919 bytes
+2025/01/22-09:32:56.079 18f8 compacted to: files[ 0 0 5 0 0 0 0 ]
+2025/01/22-09:32:56.080 18f8 Delete type=2 #810
+2025/01/22-09:32:56.080 18f8 Delete type=2 #811
+2025/01/22-09:32:56.080 18f8 Delete type=2 #812
+2025/01/22-09:32:56.080 18f8 Delete type=2 #813
+2025/01/22-09:32:56.080 18f8 Delete type=2 #814
+2025/01/22-09:32:56.080 18f8 Delete type=2 #817

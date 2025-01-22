@@ -131,7 +131,7 @@ client.on('message_create', async message => {
             null
         } else {
             contato =  await message.getContact()
-            console.log(contato.pushname)
+            console.log(contato)
             client.sendMessage(message.from, `Olá, ${contato.pushname}! ${saudacao}`)
             cliente.phone = message.sender
             etapa = 'pega opcao'
@@ -240,8 +240,8 @@ client.on('message_create', async message => {
                 quantity: quantidade, // Uma quantidade aleatória
                 product: {name: produto.name, type: produto.type},
                 customer: "Dante Araújo", // vou te mandar os dados do cliente e de produtos
-                phone: "+5585996105145",
-                address: "Rua Antonele Bezerra, 255, Meireles",
+                phone: contato.number,
+                address: `${rua}, ${numero_rua}, ${bairro}`,
                 price: 13 * 3,
                 payment: "Pix", // Pode ser "Pix", "Cartão de Crédito", "Dinheiro"
                 time: "18:30", // um horário qualquer 18:30
