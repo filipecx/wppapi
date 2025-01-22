@@ -120,7 +120,9 @@ const products = [
     { name: "Indaiá", type: "5L", value: 5 },
 ]
 
+let produtos = []
 
+let quantidades = []
 
 client.on('message_create', async message => {
     if (etapa === 'inicial') {
@@ -146,7 +148,8 @@ client.on('message_create', async message => {
     else if (etapa === 'escolhe produto') {   
         console.log(etapa) 
         if (message.body === '1' || message.body === '2' || message.body === '3') {
-            produto = products[message.body - 1]
+            produto = products[parseInt(message.body) - 1]
+            produtos.push(produto)
             client.sendMessage(message.from, `Você escolheu ${produto.name} de ${produto.type}. Digite a quantidade`)
             etapa = 'escolhe quantidade'
         }
@@ -156,16 +159,20 @@ client.on('message_create', async message => {
         if (parseInt(message.body) > 0 && parseInt(message.body) < 11) {
             console.log("quantidade: " + message.body)
             quantidade = message.body
+            quantidades.push(quantidade)
             client.sendMessage(message.from, "Deseja adicionar outro produto?\n 1. Sim\n 2. Não")
             etapa = 'escolhe etapa'
         }
     }
     else if (etapa === 'escolhe etapa') {
         console.log(etapa)
+        console.log("body etapa: " + message.body)
         if (message.body === '1') {
-            etapa = 'pega opcao'
+            client.sendMessage(message.from, menu)
+            console.log(etapa)
+            etapa = 'escolhe produto'
         }
-        if (message.body === '2') {
+        else if (message.body === '2') {
             client.sendMessage(message.from, "Informe a rua do endereço de entrega")
             etapa = 'pega rua'
         }
@@ -197,13 +204,21 @@ client.on('message_create', async message => {
     }
     else if (etapa === 'pega bairro') {
         if (message.body !== "Informe o bairro") {
-            bairro = message.body;
-            client.sendMessage(message.from, `O pedido de ${quantidade} ${produto}
-                \n Para o endereço:
+            bairro = message.body
+           
+            client.sendMessage(message.from, `Pedido:\n`
+                + 
+                produtos.map((prod, index) => {
+                    return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"
+                    
+                })
+                +            
+                `\n Para o endereço:
                 \n Rua ${rua},
                 \n Número ${numero_rua},
                 \n Compl: ${complemento},
                 \n Bairro: ${bairro}
+                \n Total: R$ ${produto.value * quantidade}
                 \n Selecione a forma de pagamento: 
                 \n 1. Pix
                 \n 2. Cartão
