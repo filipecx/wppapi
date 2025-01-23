@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 const cors = require('cors')
 const axios = require('axios');
+const QRCode = require('qrcode');
 //require('dotenv').config({path: './config/.env'})
 //const mongoose = require("mongoose");
 //const connectDB = require('./config/db')
@@ -128,6 +129,8 @@ let produtos = []
 
 let quantidades = []
 
+let pago = false
+
 client.on('message_create', async message => {
     if (etapa === 'inicial') {
         if (message.body === '!ping') {
@@ -138,7 +141,6 @@ client.on('message_create', async message => {
             quantidades = []
             troco = ''
             produtos = []
-
             contato =  await message.getContact()
             client.sendMessage(message.from, `Olá, ${contato.pushname}! ${saudacao}`)
             cliente.phone = message.sender
@@ -232,11 +234,37 @@ client.on('message_create', async message => {
     }
     else if (etapa === 'pega meio pagamento') {
         console.log(etapa)
-        if (message.body === '1') client.sendMessage(message.from, 'PIX')
+        if (message.body === '1') {
+            client.sendMessage(message.from, 'Chave pix: adc8293y4hfasln3478')
+            etapa = 'pagamento pix'
+        }
         else if (message.body === '2') client.sendMessage(message.from, 'Cartão')
         else if (message.body === '3') {
             client.sendMessage(message.from, `💵 Você vai precisar de troco?\n1️⃣ Sim\n2️⃣ Não`)
             etapa = 'troco'
+        }
+    }
+    else if (etapa === 'pagamento pix') {
+        if (message.body === 'pago') {
+            client.sendMessage(message.from, `🎉 Pedido confirmado! Será enviado em breve\n
+                ================================  
+                🛍️ Detalhes da sua compra:\n`
+                + 
+                produtos.map((prod, index) => {    
+                    return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"
+                    
+                })
+                +            
+                `\n Para o endereço:
+                \n Rua: ${rua},
+                \n Número: ${numero_rua},
+                \n Compl: ${complemento},
+                \n Bairro: ${bairro}
+                \n Total: *R$ ${total}*
+                \n Troco pra R$${troco}
+                ================================
+                `)
+                etapa = 'enviar pedido'
         }
     }
     else if(etapa === 'troco') {

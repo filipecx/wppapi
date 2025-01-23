@@ -1,4 +1,49 @@
-2025/01/23-13:29:20.480 2c20 Reusing MANIFEST C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/01/23-13:29:20.481 2c20 Recovering log #1869
-2025/01/23-13:29:20.533 2c20 Reusing old log C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/001869.log 
-2025/01/23-13:29:22.638 6c Manual compaction at level-0 from '\x00\xd8\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\xd9\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/01/23-14:26:55.987 950 Reusing MANIFEST C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/01/23-14:26:55.988 950 Recovering log #2017
+2025/01/23-14:26:56.456 950 Reusing old log C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002017.log 
+2025/01/23-14:26:58.274 118c Level-0 table #2037: started
+2025/01/23-14:26:58.343 118c Level-0 table #2037: 1149397 bytes OK
+2025/01/23-14:26:58.344 118c Delete type=0 #2017
+2025/01/23-14:26:58.346 118c Manual compaction at level-0 from '\x00\xe4\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\xe5\x00\x00\x00' @ 0 : 0; will stop at '\x00\xe4\x00\x00\x05' @ 6158508 : 1
+2025/01/23-14:26:58.346 118c Compacting 1@0 + 0@1 files
+2025/01/23-14:26:58.435 118c Generated table #2038@0: 18379 keys, 358817 bytes
+2025/01/23-14:26:58.447 118c Generated table #2039@0: 1671 keys, 54779 bytes
+2025/01/23-14:26:58.447 118c Compacted 1@0 + 0@1 files => 413596 bytes
+2025/01/23-14:26:58.448 118c compacted to: files[ 0 2 14 0 0 0 0 ]
+2025/01/23-14:26:58.449 118c Delete type=2 #2037
+2025/01/23-14:26:58.450 118c Manual compaction at level-0 from '\x00\xe4\x00\x00\x05' @ 6158508 : 1 .. '\x00\xe5\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/01/23-14:27:02.736 118c Compacting 1@1 + 3@2 files
+2025/01/23-14:27:03.056 118c Generated table #2040@1: 35919 keys, 2235783 bytes
+2025/01/23-14:27:03.539 118c Generated table #2041@1: 73036 keys, 2219927 bytes
+2025/01/23-14:27:03.898 118c Generated table #2042@1: 55047 keys, 1049828 bytes
+2025/01/23-14:27:03.898 118c Compacted 1@1 + 3@2 files => 5505538 bytes
+2025/01/23-14:27:03.898 118c compacted to: files[ 0 1 14 0 0 0 0 ]
+2025/01/23-14:27:03.899 118c Delete type=2 #2021
+2025/01/23-14:27:03.899 118c Delete type=2 #2022
+2025/01/23-14:27:03.899 118c Delete type=2 #2023
+2025/01/23-14:27:03.899 118c Delete type=2 #2039
+2025/01/23-14:27:04.018 164c Compacting 1@1 + 10@2 files
+2025/01/23-14:27:04.320 164c Generated table #2043@1: 85111 keys, 2233987 bytes
+2025/01/23-14:27:04.620 164c Generated table #2044@1: 94421 keys, 2246460 bytes
+2025/01/23-14:27:04.919 164c Generated table #2045@1: 94117 keys, 2244640 bytes
+2025/01/23-14:27:05.232 164c Generated table #2046@1: 97777 keys, 2250480 bytes
+2025/01/23-14:27:05.496 164c Generated table #2047@1: 101588 keys, 2254092 bytes
+2025/01/23-14:27:05.785 164c Generated table #2048@1: 101370 keys, 2254448 bytes
+2025/01/23-14:27:06.072 164c Generated table #2049@1: 63327 keys, 2327926 bytes
+2025/01/23-14:27:06.144 164c Generated table #2050@1: 2586 keys, 2138760 bytes
+2025/01/23-14:27:06.196 164c Generated table #2051@1: 1663 keys, 2124613 bytes
+2025/01/23-14:27:06.364 164c Generated table #2052@1: 10453 keys, 2142151 bytes
+2025/01/23-14:27:06.379 164c Generated table #2053@1: 1929 keys, 99071 bytes
+2025/01/23-14:27:06.379 164c Compacted 1@1 + 10@2 files => 22316628 bytes
+2025/01/23-14:27:06.380 164c compacted to: files[ 0 0 15 0 0 0 0 ]
+2025/01/23-14:27:06.381 164c Delete type=2 #2024
+2025/01/23-14:27:06.382 164c Delete type=2 #2025
+2025/01/23-14:27:06.382 164c Delete type=2 #2026
+2025/01/23-14:27:06.382 164c Delete type=2 #2027
+2025/01/23-14:27:06.382 164c Delete type=2 #2028
+2025/01/23-14:27:06.382 164c Delete type=2 #2029
+2025/01/23-14:27:06.382 164c Delete type=2 #2030
+2025/01/23-14:27:06.382 164c Delete type=2 #2031
+2025/01/23-14:27:06.382 164c Delete type=2 #2032
+2025/01/23-14:27:06.382 164c Delete type=2 #2033
+2025/01/23-14:27:06.382 164c Delete type=2 #2038
