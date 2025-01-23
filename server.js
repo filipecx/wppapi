@@ -120,6 +120,10 @@ const products = [
     { name: "Indaiá", type: "5L", value: 5 },
 ]
 
+let troco = ''
+
+let total = 0
+
 let produtos = []
 
 let quantidades = []
@@ -130,8 +134,12 @@ client.on('message_create', async message => {
             // send back "pong" to the chat the message was sent in
             null
         } else {
+            total = 0
+            quantidades = []
+            troco = ''
+            produtos = []
+
             contato =  await message.getContact()
-            console.log(contato)
             client.sendMessage(message.from, `Olá, ${contato.pushname}! ${saudacao}`)
             cliente.phone = message.sender
             etapa = 'pega opcao'
@@ -150,7 +158,7 @@ client.on('message_create', async message => {
         if (message.body === '1' || message.body === '2' || message.body === '3') {
             produto = products[parseInt(message.body) - 1]
             produtos.push(produto)
-            client.sendMessage(message.from, `Você escolheu ${produto.name} de ${produto.type}. Digite a quantidade`)
+            client.sendMessage(message.from, `Você escolheu ${produto.name} de ${produto.type}.\n🔢 Quantos itens você deseja?`)
             etapa = 'escolhe quantidade'
         }
     }
@@ -160,7 +168,7 @@ client.on('message_create', async message => {
             console.log("quantidade: " + message.body)
             quantidade = message.body
             quantidades.push(quantidade)
-            client.sendMessage(message.from, "Deseja adicionar outro produto?\n 1. Sim\n 2. Não")
+            client.sendMessage(message.from, "✅ Certo, deseja escolher mais algum de nossos produtos ?\n1️⃣ Sim\n2️⃣ Não")
             etapa = 'escolhe etapa'
         }
     }
@@ -173,21 +181,21 @@ client.on('message_create', async message => {
             etapa = 'escolhe produto'
         }
         else if (message.body === '2') {
-            client.sendMessage(message.from, "Informe a rua do endereço de entrega")
+            client.sendMessage(message.from, "👍 Tudo pronto! Agora precisamos do endereço de entrega.\nInforme o nome da sua rua")
             etapa = 'pega rua'
         }
     }
     else if (etapa === 'pega rua') {
         console.log("rua: " + message.body)
-        if (message.body.length > 1 && message.body !== "Informe a rua do endereço de entrega") {
+        if (message.body.length > 1 && message.body !== "👍 Tudo pronto! Agora precisamos do endereço de entrega.\nInforme o nome da sua rua") {
             rua = message.body
             console.log("Rua armazenada: " + rua)
-            client.sendMessage(message.from, "Informe o número da rua")
+            client.sendMessage(message.from, "Informe o número")
             etapa = 'pega numero rua'
         }
     }
     else if (etapa === 'pega numero rua') {
-        if (message.body !== "Informe o número da rua") {
+        if (message.body !== "Informe o número") {
             console.log("Número da rua: " + message.body)
             numero_rua = message.body
             client.sendMessage(message.from, "Informe o complemento")
@@ -209,20 +217,15 @@ client.on('message_create', async message => {
             client.sendMessage(message.from, `Pedido:\n`
                 + 
                 produtos.map((prod, index) => {
-                    return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"
-                    
+                    total += prod.value * quantidades[index]                    
                 })
                 +            
-                `\n Para o endereço:
-                \n Rua ${rua},
-                \n Número ${numero_rua},
-                \n Compl: ${complemento},
-                \n Bairro: ${bairro}
-                \n Total: R$ ${produto.value * quantidade}
+                `
+                \n ✅ Perfeito! O valor total do seu pedido é *R$ ${total}*
                 \n Selecione a forma de pagamento: 
-                \n 1. Pix
-                \n 2. Cartão
-                \n 3. Dinheiro`)
+                \n 1️⃣ Pix
+                \n 2️⃣ Cartão
+                \n 3️⃣ Dinheiro`)
             etapa = 'pega meio pagamento'
         }
      
@@ -231,10 +234,55 @@ client.on('message_create', async message => {
         console.log(etapa)
         if (message.body === '1') client.sendMessage(message.from, 'PIX')
         else if (message.body === '2') client.sendMessage(message.from, 'Cartão')
-        else if (message.body === '3') client.sendMessage(message.from, 'Dinheiro')
+        else if (message.body === '3') {
+            client.sendMessage(message.from, `💵 Você vai precisar de troco?\n1️⃣ Sim\n2️⃣ Não`)
+            etapa = 'troco'
+        }
+    }
+    else if(etapa === 'troco') {
+        console.log(etapa)
+        console.log('message: ' + message.body)
+        if (message.body === '1') {
+            client.sendMessage(message.from, `Troco pra quanto 💵 ?`)
+            etapa = 'pega valor troco'
+            
+        }
+        else if (message.body === '2') {
+            etapa = 'encerrar pedido'
+        }
+    }
+    else if(etapa === 'pega valor troco') {
+        console.log(etapa)
+        if (parseInt(message.body) > 5 &&  message.body !== `Troco pra quanto 💵 ?`){
+            //client.sendMessage(message.from, `Ok! Troco pra R$${message.body}`)
+            troco = message.body
+            client.sendMessage(message.from, `
+                🎉 Pedido confirmado! Será enviado em breve\n
+                ================================  
+                🛍️ Detalhes da sua compra:\n`
+                + 
+                produtos.map((prod, index) => {    
+                    return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"
+                    
+                })
+                +            
+                `\n Para o endereço:
+                \n Rua: ${rua},
+                \n Número: ${numero_rua},
+                \n Compl: ${complemento},
+                \n Bairro: ${bairro}
+                \n Total: *R$ ${total}*
+                \n Troco pra R$${troco}
+                ================================
+                `)
+            
+            etapa = 'enviar pedido'
+        }
+        
     }
     else if ( etapa === 'enviar pedido') {
-        axios.post('http:endereco-do-back', 
+        console.log(etapa)
+        const pedido = await axios.post('http:endereco-do-back', 
             {
                 orderId: 833874, // Qualquer valor
                 quantity: quantidade, // Uma quantidade aleatória
@@ -253,12 +301,15 @@ client.on('message_create', async message => {
           .catch(error => {
             console.error('Error sending POST request:', error);
           });
+        etapa = 'inicial'
+          
     }
 })
 
 //////////////////////MENSAGENS////////////////////////////////
-let saudacao = `\nEscolha uma das opções para ser atendido \n1. Fazer novo pedido \n2. Realizar pedido padrão \n3. Falar com atendente \n4. Editar Pedido padrão`
-let menu = "Digite o número do produto para adiciona-lo ao carrinho: \n1. Naturágua 20L \n2. Indaiá 20L \n3. Indaiá 5L"
+let saudacao = `👋 Seja bem-vindo ao sistema *Drops*! É um prazer ter você aqui.\nPara começar, escolha uma das opções abaixo: \n1️⃣ Fazer um novo pedido  \n2️⃣ Realizar pedido padrão  \n3️⃣ Falar com um de nossos atendentes \n4️⃣ Editar pedido padrão `
+let menu = `✅ Perfeito, ${contato.pushname}! Agora vamos escolher o produto para o seu pedido.\n
+ \n1️⃣ Naturágua 20L \n2️⃣ Indaiá 20L \n3️⃣ Indaiá 5L`
 let finalizado = false
 
 
