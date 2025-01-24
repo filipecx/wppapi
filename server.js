@@ -367,6 +367,7 @@ client.on('message_create', async message => {
             etapa = 'enviar pedido'
         }
     }
+    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     else if (etapa === 'escolhe produto') {   
         console.log(etapa) 
         if (message.body === '1' || message.body === '2' || message.body === '3') {
@@ -406,11 +407,13 @@ client.on('message_create', async message => {
                     return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"                
                 }))
                 etapa = 'enviar pedido'
-            //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            //Adicionando produto à um novo pedido padrão
             } else {
                 client.sendMessage(message.from, "👍 Tudo pronto! Agora precisamos do endereço de entrega.\nInforme o nome da sua rua")
                 etapa = 'pega rua'
             }
+            //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         }
     }
     else if (etapa === 'pega rua') {
@@ -470,7 +473,7 @@ client.on('message_create', async message => {
         }
     }
     else if (etapa === 'pagamento pix') {
-        if (message.body === 'pago') {
+        if (message.body.toLocaleLowerCase() === 'pago') {
             client.sendMessage(message.from, `🎉 Pedido confirmado! Será enviado em breve
                 \n================================  
                 \n🛍️ Detalhes da sua compra:`
@@ -559,7 +562,7 @@ client.on('message_create', async message => {
 })
 
 //////////////////////MENSAGENS////////////////////////////////
-let saudacao = `👋 Seja bem-vindo ao sistema *Drops*! \nÉ um prazer ter você aqui.\nPara começar, escolha uma das opções abaixo: \n1️⃣ Fazer um novo pedido  \n2️⃣ Realizar pedido padrão  \n3️⃣ Falar com um de nossos atendentes \n4️⃣ Editar pedido padrão `
+let saudacao = `\n👋 Seja bem-vindo ao sistema *Drops*! \nÉ um prazer ter você aqui.\nPara começar, escolha uma das opções abaixo: \n1️⃣ Fazer um novo pedido  \n2️⃣ Realizar pedido padrão  \n3️⃣ Falar com um de nossos atendentes \n4️⃣ Editar pedido padrão `
 let menu = `✅ Perfeito, ${contato.pushname}! Agora vamos escolher o produto para o seu pedido.\n
  \n1️⃣ Naturágua 20L \n2️⃣ Indaiá 20L \n3️⃣ Indaiá 5L`
 let finalizado = false
