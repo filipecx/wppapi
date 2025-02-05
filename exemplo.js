@@ -34,7 +34,7 @@ async function createClient( client ) {
   //   "organizationId": 2 // Por enquanto sempre vai ser 2
   // }
   try {
-    const response = await axios.post(`http://localhost:3000/api/v1/client`, client)
+    const response = await axios.post(`http://localhost:4000/api/v1/client`, client)
     return response.data;
   } catch (error) {
     console.error(error);
@@ -44,7 +44,7 @@ async function createClient( client ) {
 
 async function getClientInfo( number ) {
   try {
-    const response = await axios.get(`http://localhost:3000/api/v1/client/2/${number}`)
+    const response = await axios.get(`http://localhost:4000/api/v1/client/2/${number}`)
     return response.data;
   } catch (error) {
     console.error(error);
@@ -53,7 +53,7 @@ async function getClientInfo( number ) {
 }
 async function getProducts() {
   try {
-    const response = await axios.get(`http://localhost:3000/api/v1/product/2`)
+    const response = await axios.get(`http://localhost:4000/api/v1/product/2?include=1`)
     return response.data;
   } catch (error) {
     console.error(error);

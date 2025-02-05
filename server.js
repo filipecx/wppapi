@@ -46,6 +46,19 @@ app.post('/enviar-mensagem', (req, res) => {
     )
 })
 
+async function getClientInfo( number ) {
+  try {
+    const response = await axios.get(`http://localhost:3000/api/v1/client/2/${number}`)
+    console.log('dentro da func: ' + response.data.name)
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar dados do cliente: ", error);
+    return null
+  }
+
+}
+let usuario;
+
 const pegarUsuario = (numero) => {
     app.get(`http://localhost:3000/api/v1/${numero}`, async (req, res) => {
         const data = await res.data
@@ -100,28 +113,83 @@ client.on('qr', (qr) => {
 client.initialize();
 
 
-
-
+let item = ''
+let items = []
 let contato = {pushname: ""}
 let etapa = 'inicial'
 let produto = ''
-let quantidade = ''
+let quantidade = 0
 let rua = ''
 let numero_rua = ''
 let complemento = ''
 let bairro = ''
 let cliente = {
-    name: "Dante Araújo",
-    phone: "+5585996105145",
-    address: ""
+    name: "Filipe Cavalcanti",
+  email: "lipejv67f6vaoc@gmail.com",
+  phoneNumber: "",
+  street:"Washington Soares",
+  number:"1010",
+  complement:"em frente ao Wesley Safadão Trade Center",
+  neighborhood:"Edson Queiroz",
+  city:"Fortaleza",
+  state:"Ceará",
+  cep:"60160070",
+  organizationId: 2
+}
+async function getProducts() {
+  try {
+    const response = await axios.get(`http://localhost:3000/api/v1/product/2`)
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+
+}
+let products = []
+getProductsTypes = async () => {
+    try {
+        const response = await axios.get(`http://localhost:3000/api/v1/product/types/2`)
+        console.log(response.data)
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
+}
+getDefaultProductsTypes = async () => {
+    try {
+        const response = await axios.get(`http://localhost:3000/api/v1/product/types/2`)
+        console.log(response.data)
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
+}
+let types =  []
+addCliente = async (cliente) => {
+    await axios.post('http://localhost:3000/api/v1/client', cliente,
+         
+    {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+    )
+      .then(response => {
+        console.log('Cliente cadastrado com sucesso:', response.data);
+      })
+      .catch(error => {
+        console.error('Error adding client:', error);
+      });
 }
 
+/*
 const products = [
     { name: "Naturágua", type: "20L", value: 13 },
     { name: "Indaiá", type: "20L", value: 12 },
     { name: "Indaiá Mini", type: "5L", value: 5 },
 ]
-
+*/
 let troco = ''
 
 let total = 0
@@ -132,18 +200,20 @@ let quantidades = []
 
 let pos_nova_quantidade = ''
 
+
+
 let pedido_padrao = {
+    
     orderId: 833874, // Qualquer valor
     quantitys: [3, 1], // Uma quantidade aleatória
-    product: [{name: "Naturágua", type: "20L"}, {name: "Indaiá", type: "5L"}],
+    product: [{name: "Naturágua", type: "20L", value: 10, quantity: 2}, {name: "Indaiá", type: "5L", value: 5, quantity: 1}],
     customer: "Dante Araújo", // vou te mandar os dados do cliente e de produtos
-    phone: "+5585996105145",
+    clientPhoneNumber: "5585996105145",
     address: {rua: "Rua Antonele Bezerra", numero: "255", bairro: "Meireles"},
     price: 36,
     payment: "Pix", // Pode ser "Pix", "Cartão de Crédito", "Dinheiro"
     time: "18:30", // um horário qualquer 18:30
 }
-
 
 
 client.on('message_create', async message => {
@@ -152,15 +222,22 @@ client.on('message_create', async message => {
             // send back "pong" to the chat the message was sent in
             null
         } else {
+            products = await getProducts()
+            types = await getProductsTypes()
+            //menu = 
             pos_nova_quantidade = ''
             total = 0
             quantidades = []
             troco = ''
-            produtos = []
+            produtos = []         
             contato =  await message.getContact()
+            usuario = await getClientInfo(contato.number)
+            cliente.phoneNumber = contato.number
+            cliente.name = contato.pushname
             client.sendMessage(message.from, `Olá, ${contato.pushname}! ${saudacao}`)
-            cliente.phone = message.sender
+            
             etapa = 'pega opcao'
+            
             console.log(etapa)
         }
     }
@@ -168,12 +245,17 @@ client.on('message_create', async message => {
     else if (etapa === 'pega opcao') {
         //CADASTRAR NOVO PEDIDO PADRÃO E CLIENTE
         if (message.body === "1") {
-            client.sendMessage(message.from, menu)
+            client.sendMessage(message.from, " " + products.map((product, index) => {
+                let emoji = index + 1
+                return String.fromCodePoint(0x30 + emoji, 0xFE0F, 0x20E3) + ` ${product.name} ${types[index].name}\n`
+            }))
             console.log(etapa)
             etapa = 'escolhe produto'
         }
         //REALIZAR PEDIDO PADRÃO JÁ EXISTENTE
         else if (message.body === "2") {
+            
+
             rua = pedido_padrao.address.rua
             numero_rua = pedido_padrao.address.numero
             complemento = 'casa'
@@ -208,17 +290,23 @@ client.on('message_create', async message => {
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         //EDITAR PEDIDO
         else if(message.body === "4") {
+            cliente.name = usuario.name
+            cliente.phoneNumber = usuario.phoneNumber
+            cliente.street = usuario.street
+            cliente.number = usuario.number
+            cliente.complement = usuario.complement
             client.sendMessage(message.from, `Seu pedido padrão atual é: 
                 \nPedido:\n`
                 +
                 pedido_padrao.product.map((prod, index) => {
-                    produtos.push(products[products.findIndex(produto => produto.name === prod.name)])
-                    quantidades.push(pedido_padrao.quantitys[index])
+                    produtos.push(prod)
+                    //produtos.push(products[products.findIndex(produto => produto.name === prod.name)])
+                    //quantidades.push(pedido_padrao.quantitys[index])
                 })
                 +
                 produtos.map((prod, index) => {
-                    total += prod.value * quantidades[index]    
-                    return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"                
+                    total += prod.value * prod.quantity    
+                    return "-- " + prod.name + " de " + prod.type + " " + prod.quantity + "x\n"                
                 })
                 +
                 `Qual dos campos deseja editar?
@@ -257,7 +345,7 @@ client.on('message_create', async message => {
                 \n1️⃣ Editar rua
                 \n2️⃣ Editar número
                 \n3️⃣ Editar bairro
-                \n4 Voltar ao início
+                \n4️⃣ Voltar ao início
                 `
             )
             etapa = 'editar endereco'
@@ -284,6 +372,7 @@ client.on('message_create', async message => {
         if (message.body !== 'Informe a nova rua: ') {
             console.log(message.body)
             rua = message.body
+            cliente.street = rua
             client.sendMessage(message.from, `
                 🎉 Pedido padrão atualizado com sucesso! Agora ele será utilizado automaticamente para futuras compras.
                 \nSeu novo endereço é:
@@ -294,6 +383,7 @@ client.on('message_create', async message => {
     else if (etapa === 'pega novo numero') {
         if (message.body !== 'Informe o novo número: ') {
             numero_rua = message.body
+            cliente.number = numero_rua
             client.sendMessage(message.from, `
                 🎉 Pedido padrão atualizado com sucesso! Agora ele será utilizado automaticamente para futuras compras.
                 \nSeu novo número é: ${numero_rua}`)
@@ -303,6 +393,7 @@ client.on('message_create', async message => {
     else if (etapa === 'pega novo bairro') {
         if (message.body !== 'Informe o novo bairro: ') {
             bairro = message.body
+            cliente.neighborhood = bairro
             client.sendMessage(message.from, `
                 🎉 Pedido padrão atualizado com sucesso! Agora ele será utilizado automaticamente para futuras compras.
                 \nBairro: ${bairro}`)
@@ -339,6 +430,7 @@ client.on('message_create', async message => {
     else if (etapa === 'escolhe quantidade nova') {
         if (parseInt(message.body) > 0) {
             quantidades[pos_nova_quantidade] = message.body
+            items[pos_nova_quantidade] = parseInt(message.body)
             client.sendMessage(message.from, `🎉 Pedido padrão atualizado com sucesso! Agora ele será utilizado automaticamente para futuras compras.
                 \n🛠️Confira seu novo pedido padrão: 
                 \nPedido:\n`
@@ -356,6 +448,7 @@ client.on('message_create', async message => {
             let i = message.body
             console.log(i)
             produtos.splice(i - 1, 1)
+            items.splice(i - 1, 1)
             client.sendMessage(message.from, `🎉 Pedido padrão atualizado com sucesso! Agora ele será utilizado automaticamente para futuras compras.
                 \n🛠️Confira seu novo pedido padrão: 
                 \nPedido:\n`
@@ -370,10 +463,12 @@ client.on('message_create', async message => {
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     else if (etapa === 'escolhe produto') {   
         console.log(etapa) 
-        if (message.body === '1' || message.body === '2' || message.body === '3') {
+        if (parseInt(message.body) > 0) {
             produto = products[parseInt(message.body) - 1]
+            console.log(produto)
+
             produtos.push(produto)
-            client.sendMessage(message.from, `Você escolheu ${produto.name} de ${produto.type}.\n🔢 Quantos itens você deseja?`)
+            client.sendMessage(message.from, `Você escolheu ${produto.name} de ${produto.typeId}.\n🔢 Quantos itens você deseja?`)
             etapa = 'escolhe quantidade'
         }
     }
@@ -381,7 +476,8 @@ client.on('message_create', async message => {
         console.log(etapa)
         if (parseInt(message.body) > 0 && parseInt(message.body) < 11) {
             console.log("quantidade: " + message.body)
-            quantidade = message.body
+            quantidade = parseInt(message.body)
+            items.push({ productId: produto.id, quantity: quantidade, price: produto.price });
             quantidades.push(quantidade)
             client.sendMessage(message.from, "✅ Certo, deseja escolher mais algum de nossos produtos ?\n1️⃣ Sim\n2️⃣ Não")
             etapa = 'escolhe etapa'
@@ -391,7 +487,10 @@ client.on('message_create', async message => {
         console.log(etapa)
         console.log("body etapa: " + message.body)
         if (message.body === '1') {
-            client.sendMessage(message.from, menu)
+            client.sendMessage(message.from, " " + products.map((product, index) => {
+                index = index + 1
+                return String.fromCodePoint(0x30 + index, 0xFE0F, 0x20E3) + ` ${product.name} ${product.typeId}\n`
+            }))
             console.log(etapa)
             etapa = 'escolhe produto'
         }
@@ -420,23 +519,32 @@ client.on('message_create', async message => {
         console.log("rua: " + message.body)
         if (message.body.length > 1 && message.body !== "👍 Tudo pronto! Agora precisamos do endereço de entrega.\nInforme o nome da sua rua") {
             rua = message.body
+            cliente.street = rua
             console.log("Rua armazenada: " + rua)
-            client.sendMessage(message.from, "Informe o número")
+            client.sendMessage(message.from, "Informe o número do endereço")
             etapa = 'pega numero rua'
         }
     }
     else if (etapa === 'pega numero rua') {
-        if (message.body !== "Informe o número") {
+        if (message.body !== "Informe o número do endereço") {
             console.log("Número da rua: " + message.body)
             numero_rua = message.body
+            cliente.number = numero_rua
             client.sendMessage(message.from, "Informe o complemento")
             etapa = 'pega complemento'
         }      
     }
     else if (etapa === 'pega complemento') {
         if (message.body !== "Informe o complemento") {
-            console.log(message.body)
             complemento = message.body;
+            cliente.complement = complemento
+            client.sendMessage(message.from, "Informe o CEP")
+            etapa = 'pega cep'
+        }       
+    }
+    else if (etapa === 'pega cep') {
+        if (message.body !== "Informe o CEP") {
+            cliente.cep = message.body
             client.sendMessage(message.from, "Informe o bairro")
             etapa = 'pega bairro'
         }       
@@ -444,11 +552,19 @@ client.on('message_create', async message => {
     else if (etapa === 'pega bairro') {
         if (message.body !== "Informe o bairro") {
             bairro = message.body
-           
+            cliente.neighborhood = bairro
+            client.sendMessage(message.from, "Informe o seu e-mail")
+            etapa = 'pega email'
+        }   
+    }
+    else if (etapa === 'pega email') {
+        if (message.body !== 'Informe o seu e-mail') {
+            cliente.email = message.body
+            addCliente(cliente)
             client.sendMessage(message.from, `Pedido:\n`
                 + 
                 produtos.map((prod, index) => {
-                    total += prod.value * quantidades[index]                    
+                    total += prod.price * quantidades[index]                    
                 })
                 +            
                 `
@@ -457,9 +573,11 @@ client.on('message_create', async message => {
                 \n 1️⃣ Pix
                 \n 2️⃣ Cartão
                 \n 3️⃣ Dinheiro`)
+
             etapa = 'pega meio pagamento'
-        }   
+        }
     }
+
     else if (etapa === 'pega meio pagamento') {
         console.log(etapa)
         if (message.body === '1') {
@@ -479,7 +597,7 @@ client.on('message_create', async message => {
                 \n🛍️ Detalhes da sua compra:`
                 + 
                 produtos.map((prod, index) => {    
-                    return "\n-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x"
+                    return "\n-- " + prod.name + " de " + prod.typeId + " " + quantidades[index] + "x"
                     
                 })
                 +            
@@ -517,7 +635,7 @@ client.on('message_create', async message => {
                 🛍️ Detalhes da sua compra:\n`
                 + 
                 produtos.map((prod, index) => {    
-                    return "-- " + prod.name + " de " + prod.type + " " + quantidades[index] + "x\n"
+                    return "-- " + prod.name + " de " + prod.typeId + " " + quantidades[index] + "x\n"
                     
                 })
                 +            
@@ -537,8 +655,14 @@ client.on('message_create', async message => {
     }
     else if ( etapa === 'enviar pedido') {
         console.log(etapa)
-        const pedido = await axios.post('http:endereco-do-back', 
+        const pedido = await axios.post('http://localhost:3000/api/v1/order', 
             {
+                clientPhoneNumber: cliente.phoneNumber,
+                organizationId: 2,
+                totalPrice: total,
+                status: "Pending",
+                items: items
+                /*
                 orderId: 833874, // Qualquer valor
                 quantity: quantidade, // Uma quantidade aleatória
                 product: {name: produto.name, type: produto.type},
@@ -548,13 +672,19 @@ client.on('message_create', async message => {
                 price: 13 * 3,
                 payment: "Pix", // Pode ser "Pix", "Cartão de Crédito", "Dinheiro"
                 time: "18:30", // um horário qualquer 18:30
+                */
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             }
         )
           .then(response => {
             console.log('Response from server:', response.data);
           })
           .catch(error => {
-            console.error('Error sending POST request:', error);
+            console.error('Erro ao adicionar Order:', error);
           });
         etapa = 'inicial'
           
@@ -562,9 +692,11 @@ client.on('message_create', async message => {
 })
 
 //////////////////////MENSAGENS////////////////////////////////
+
 let saudacao = `\n👋 Seja bem-vindo ao sistema *Drops*! \nÉ um prazer ter você aqui.\nPara começar, escolha uma das opções abaixo: \n1️⃣ Fazer um novo pedido  \n2️⃣ Realizar pedido padrão  \n3️⃣ Falar com um de nossos atendentes \n4️⃣ Editar pedido padrão `
-let menu = `✅ Perfeito, ${contato.pushname}! Agora vamos escolher o produto para o seu pedido.\n
- \n1️⃣ Naturágua 20L \n2️⃣ Indaiá 20L \n3️⃣ Indaiá 5L`
+/*let menu = `✅ Perfeito, ${contato.pushname}! Agora vamos escolher o produto para o seu pedido.\n`
+    
+ `\n1️⃣ Naturágua 20L \n2️⃣ Indaiá 20L \n3️⃣ Indaiá 5L`*/
 let finalizado = false
 
 

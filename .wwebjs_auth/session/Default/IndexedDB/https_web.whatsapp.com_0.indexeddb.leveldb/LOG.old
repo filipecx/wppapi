@@ -1,4 +1,4 @@
-2025/01/23-22:31:51.899 35dc Reusing MANIFEST C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/01/23-22:31:51.901 35dc Recovering log #3055
-2025/01/23-22:31:51.941 35dc Reusing old log C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/003055.log 
-2025/01/23-22:31:58.148 30a8 Manual compaction at level-0 from ' .\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' /\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/02/05-03:38:07.809 2e5c Reusing MANIFEST C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/02/05-03:38:07.812 2e5c Recovering log #4147
+2025/02/05-03:38:07.996 2e5c Reusing old log C:\Users\filip\Documents\smd\integrado2\api_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/004147.log 
+2025/02/05-03:38:10.003 2e5c Manual compaction at level-0 from ' o\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' p\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
